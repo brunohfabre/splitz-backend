@@ -17,11 +17,26 @@ export class FriendsController {
             friend_id: userId,
           },
         ],
+        AND: [
+          {
+            accepted_at: {
+              not: null,
+            },
+          },
+        ],
       },
       select: {
         id: true,
         accepted_at: true,
         friend: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar_url: true,
+          },
+        },
+        user: {
           select: {
             id: true,
             name: true,
@@ -37,11 +52,11 @@ export class FriendsController {
 
   static async create(request: Request, response: Response) {
     const { userId } = request
-    const { friendId } = request.body
+    const { email } = request.body
 
     const userExists = await prisma.user.findUnique({
       where: {
-        id: friendId,
+        email,
       },
     })
 
@@ -71,11 +86,20 @@ export class FriendsController {
     const friend = await prisma.friend.create({
       data: {
         user_id: userId,
-        friend_id: friendId,
+        friend_id: userExists.id,
       },
       select: {
         id: true,
+        accepted_at: true,
         friend: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar_url: true,
+          },
+        },
+        user: {
           select: {
             id: true,
             name: true,

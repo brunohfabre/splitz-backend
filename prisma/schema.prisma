@@ -31,9 +31,9 @@ model Friend {
   accepted_at DateTime?
 
   user_id   String?
-  user      User?   @relation("user", fields: [user_id], references: [id])
+  user      User?   @relation("user", fields: [user_id], references: [id], onDelete: SetNull)
   friend_id String?
-  friend    User?   @relation("friend", fields: [friend_id], references: [id])
+  friend    User?   @relation("friend", fields: [friend_id], references: [id], onDelete: SetNull)
 
   @@index([user_id, friend_id])
   @@index([friend_id])
