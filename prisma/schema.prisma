@@ -23,6 +23,8 @@ model User {
   friends    Friend[] @relation("user")
   friends_in Friend[] @relation("friend")
 
+  bills Bill[]
+
   @@map("users")
 }
 
@@ -38,4 +40,30 @@ model Friend {
   @@index([user_id, friend_id])
   @@index([friend_id])
   @@map("friends")
+}
+
+model Bill {
+  id          String @id @default(uuid())
+  name        String
+  total_value Float
+
+  billUsers BillUser[]
+
+  owner_id String
+  owner    User   @relation(fields: [owner_id], references: [id])
+
+  @@index([owner_id])
+  @@map("bills")
+}
+
+model BillUser {
+  id      String @id @default(uuid())
+  value   Float
+  user_id String
+
+  bill    Bill   @relation(fields: [bill_id], references: [id], onDelete: Cascade)
+  bill_id String
+
+  @@index([bill_id])
+  @@map("bill_users")
 }

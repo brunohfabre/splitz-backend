@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import { BillsController } from './controllers/billsController'
 import { FriendsController } from './controllers/friendsController'
 import { InvitesController } from './controllers/invites'
 import { SessionsController } from './controllers/sessionsController'
@@ -21,5 +22,7 @@ routes.post('/friends', FriendsController.create)
 routes.get('/invites', InvitesController.index)
 routes.put('/invites/:id', InvitesController.update)
 routes.delete('/invites/:id', InvitesController.delete)
+
+routes.post('/bills', BillsController.create)
 
 export { routes }
