@@ -3,6 +3,18 @@ import { Request, Response } from 'express'
 import { prisma } from '../prisma'
 
 export class BillsController {
+  static async index(request: Request, response: Response) {
+    const { userId } = request
+
+    const bills = await prisma.bill.findMany({
+      where: {
+        owner_id: userId,
+      },
+    })
+
+    return response.json({ bills })
+  }
+
   static async create(request: Request, response: Response) {
     const { userId } = request
     const { name, totalValue, users } = request.body

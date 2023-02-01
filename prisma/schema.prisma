@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -31,39 +30,38 @@ model User {
 model Friend {
   id          String    @id @default(uuid())
   accepted_at DateTime?
+  created_at  DateTime  @default(now())
 
   user_id   String?
   user      User?   @relation("user", fields: [user_id], references: [id], onDelete: SetNull)
   friend_id String?
   friend    User?   @relation("friend", fields: [friend_id], references: [id], onDelete: SetNull)
 
-  @@index([user_id, friend_id])
-  @@index([friend_id])
   @@map("friends")
 }
 
 model Bill {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   total_value Float
+  created_at  DateTime @default(now())
 
   billUsers BillUser[]
 
   owner_id String
   owner    User   @relation(fields: [owner_id], references: [id])
 
-  @@index([owner_id])
   @@map("bills")
 }
 
 model BillUser {
-  id      String @id @default(uuid())
-  value   Float
-  user_id String
+  id         String   @id @default(uuid())
+  value      Float
+  user_id    String
+  created_at DateTime @default(now())
 
   bill    Bill   @relation(fields: [bill_id], references: [id], onDelete: Cascade)
   bill_id String
 
-  @@index([bill_id])
   @@map("bill_users")
 }

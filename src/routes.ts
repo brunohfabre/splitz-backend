@@ -24,6 +24,7 @@ routes.get('/invites', InvitesController.index)
 routes.put('/invites/:id', InvitesController.update)
 routes.delete('/invites/:id', InvitesController.delete)
 
+routes.get('/bills', BillsController.index)
 routes.post('/bills', BillsController.create)
 
 routes.get('/splits', SplitsController.index)
