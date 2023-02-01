@@ -9,19 +9,8 @@ export class InvitesController {
 
     const invites = await prisma.friend.findMany({
       where: {
-        OR: [
-          {
-            user_id: userId,
-          },
-          {
-            friend_id: userId,
-          },
-        ],
-        AND: [
-          {
-            accepted_at: null,
-          },
-        ],
+        friend_id: userId,
+        accepted_at: null,
       },
       select: {
         id: true,

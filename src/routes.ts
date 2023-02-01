@@ -4,6 +4,7 @@ import { BillsController } from './controllers/billsController'
 import { FriendsController } from './controllers/friendsController'
 import { InvitesController } from './controllers/invites'
 import { SessionsController } from './controllers/sessionsController'
+import { SplitsController } from './controllers/splitsController'
 import { UsersController } from './controllers/usersController'
 import { ensureAuthenticated } from './middlewares/ensureAuthenticated'
 
@@ -24,5 +25,7 @@ routes.put('/invites/:id', InvitesController.update)
 routes.delete('/invites/:id', InvitesController.delete)
 
 routes.post('/bills', BillsController.create)
+
+routes.get('/splits', SplitsController.index)
 
 export { routes }
