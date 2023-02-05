@@ -39,12 +39,14 @@ export class UsersController {
       expiresIn,
     })
 
-    const { id } = user
+    const { id, bio, avatar_url } = user
 
     const userWithoutPassword = {
       id,
       name,
       email,
+      bio,
+      avatarUrl: avatar_url,
     }
 
     return response.json({
