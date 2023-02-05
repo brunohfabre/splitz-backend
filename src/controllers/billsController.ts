@@ -8,7 +8,18 @@ export class BillsController {
 
     const bills = await prisma.bill.findMany({
       where: {
-        owner_id: userId,
+        OR: [
+          {
+            owner_id: userId,
+          },
+          {
+            billUsers: {
+              some: {
+                user_id: userId,
+              },
+            },
+          },
+        ],
       },
     })
 
@@ -16,24 +27,26 @@ export class BillsController {
   }
 
   static async create(request: Request, response: Response) {
-    const { userId } = request
-    const { name, totalValue, users } = request.body
+    const { userId, file } = request
+    const { name, value, type, friends } = request.body
 
-    const total_value = totalValue * 100
+    const total_value = value * 100
 
-    const usersToSplit = [...users, userId]
+    const usersToSplit = friends?.length ? [...friends, userId] : []
 
-    const value = total_value / usersToSplit.length
+    const valuePerFriend = total_value / usersToSplit.length
 
     const bill = await prisma.bill.create({
       data: {
         name,
         owner_id: userId,
         total_value,
+        type,
+        invoice_url: file?.filename,
         billUsers: {
           create: usersToSplit.map((userId) => ({
+            value: valuePerFriend,
             user_id: userId,
-            value,
           })),
         },
       },

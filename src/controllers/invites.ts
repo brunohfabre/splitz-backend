@@ -7,7 +7,7 @@ export class InvitesController {
   static async index(request: Request, response: Response) {
     const { userId } = request
 
-    const invites = await prisma.friend.findMany({
+    const invites = await prisma.friendship.findMany({
       where: {
         friend_id: userId,
         accepted_at: null,
@@ -41,7 +41,7 @@ export class InvitesController {
     const { userId } = request
     const { id } = request.params
 
-    const inviteExists = await prisma.friend.findFirst({
+    const inviteExists = await prisma.friendship.findFirst({
       where: {
         OR: [
           {
@@ -59,7 +59,7 @@ export class InvitesController {
       throw new AppError('Invitation do not exists.')
     }
 
-    await prisma.friend.update({
+    await prisma.friendship.update({
       where: {
         id: inviteExists.id,
       },
@@ -75,7 +75,7 @@ export class InvitesController {
     const { userId } = request
     const { id } = request.params
 
-    const inviteExists = await prisma.friend.findFirst({
+    const inviteExists = await prisma.friendship.findFirst({
       where: {
         OR: [
           {
@@ -93,7 +93,7 @@ export class InvitesController {
       throw new AppError('Invitation do not exists.')
     }
 
-    await prisma.friend.delete({
+    await prisma.friendship.delete({
       where: {
         id: inviteExists.id,
       },

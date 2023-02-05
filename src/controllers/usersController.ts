@@ -1,6 +1,8 @@
 import { hash } from 'bcryptjs'
 import { Request, Response } from 'express'
 import { sign } from 'jsonwebtoken'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import { authConfig } from '../config/authConfig'
 import { AppError } from '../errors/AppError'
@@ -48,6 +50,60 @@ export class UsersController {
     return response.json({
       user: userWithoutPassword,
       token,
+    })
+  }
+
+  static async updateAvatar(request: Request, response: Response) {
+    const { userId, file } = request
+
+    const userExists = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!userExists) {
+      throw new AppError('User do not exists.')
+    }
+
+    if (userExists.avatar_url && !userExists.avatar_url.includes('http')) {
+      const fileDest = path.resolve(
+        __dirname,
+        '..',
+        '..',
+        'tmp',
+        'uploads',
+        userExists.avatar_url,
+      )
+
+      const fileExists = fs.existsSync(fileDest)
+
+      if (fileExists) {
+        await fs.promises.unlink(fileDest)
+      }
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        avatar_url: file?.filename,
+      },
+    })
+
+    const { id, name, email, bio } = userExists
+
+    const user = {
+      id,
+      name,
+      email,
+      bio,
+      avatarUrl: file?.filename,
+    }
+
+    return response.json({
+      user,
     })
   }
 }
