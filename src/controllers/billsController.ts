@@ -53,6 +53,9 @@ export class BillsController {
           })),
         },
       },
+      include: {
+        billUsers: true,
+      },
     })
 
     return response.json({
